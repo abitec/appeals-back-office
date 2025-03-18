@@ -557,6 +557,7 @@ describe('appeal-details', () => {
 				expect(notificationBannerElementHTML).toContain('Inspector has been assigned</p>');
 			});
 
+			// TODO: A2-1754
 			it('should render a success notification banner when an appellant costs document was uploaded', async () => {
 				nock('http://test/')
 					.get('/appeals/1/document-folders/1')
@@ -656,6 +657,7 @@ describe('appeal-details', () => {
 				expect(notificationBanner2ElementHTML).toContain('Document updated</p>');
 			});
 
+			// TODO: A2-1754
 			it('should render a success notification banner when an LPA costs document was uploaded', async () => {
 				nock('http://test/')
 					.get('/appeals/1/document-folders/2')
@@ -755,6 +757,7 @@ describe('appeal-details', () => {
 				expect(notificationBanner2ElementHTML).toContain('Document updated</p>');
 			});
 
+			// TODO: A2-1754
 			it('should render a success notification banner when a costs decision document was uploaded', async () => {
 				nock('http://test/')
 					.get('/appeals/1/document-folders/3')
@@ -959,6 +962,7 @@ describe('appeal-details', () => {
 				);
 			});
 
+			// TODO: A2-1754
 			it('should render a success notification banner when a cross-team correspondence document was uploaded', async () => {
 				nock('http://test/')
 					.get('/appeals/1/document-folders/4')
@@ -1000,6 +1004,7 @@ describe('appeal-details', () => {
 				);
 			});
 
+			// TODO: A2-1754
 			it('should render a success notification banner when an inspector correspondence document was uploaded', async () => {
 				nock('http://test/')
 					.get('/appeals/1/document-folders/5')

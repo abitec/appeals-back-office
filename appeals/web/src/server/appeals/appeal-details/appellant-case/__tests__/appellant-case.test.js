@@ -690,6 +690,20 @@ describe('appellant-case', () => {
 					'<h3 class="govuk-notification-banner__title" id="govuk-notification-banner-title" > Appeal is incomplete</h3>'
 				);
 			});
+
+			// TODO: A2-1754: tests for document upload success banners:
+			// - ownership certificate and/or land declaration
+			// - application form
+			// - agreement to change description evidence
+			// - design and access statement
+			// - plans, drawings and list of plans
+			// - application decision letter
+			// - appeal statement
+			// - planning obligation
+			// - costs application
+			// - new plans or drawings
+			// - other new supporting documents
+			// - additional documents
 		});
 
 		describe('show more', () => {

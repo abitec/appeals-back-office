@@ -71,6 +71,9 @@ export const renderDocumentUpload = async ({
 		return response.status(404).render('app/404.njk');
 	}
 
+	// TODO: A2-1754: remove
+	//console.log('documentType: ' + currentFolder.path.split('/')[1]);
+
 	if (
 		'fileUploadInfo' in request.session &&
 		request.session.fileUploadInfo.appealId !== `${currentFolder.appealId}` &&

@@ -530,6 +530,29 @@ describe('LPA Questionnaire review', () => {
 				);
 			});
 		});
+
+		// TODO: A2-1754: tests for document upload success banners:
+		// - Conservation area map and guidance
+		// - Plan showing extent of TPO
+		// - Definitive map and statement extract
+		// - Environmental statement
+		// - Screening opinion documents
+		// - Screening direction documents
+		// - Notification documents (who was notified)
+		// - Site notice
+		// - Letter or email notification
+		// - Press advert notification
+		// - Appeal notification letter
+		// - Representations from other parties documents
+		// - Consultation responses or standing advice
+		// - Planning officer's report
+		// - Plans, drawings and list of plans
+		// - Relevant policies from statutory development plan
+		// - Supplementary planning documents
+		// - Emerging plan relevant to appeal
+		// - Other relevant policies
+		// - Community infrastructure levy
+		// - Additional documents
 	});
 
 	describe('GET /', () => {
