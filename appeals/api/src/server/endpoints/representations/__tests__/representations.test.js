@@ -534,7 +534,12 @@ describe('/appeals/:id/reps/publish', () => {
 	describe('publish LPA statements', () => {
 		test('409 if case is not in STATEMENTS state', async () => {
 			// @ts-ignore
-			databaseConnector.appeal.findUnique.mockResolvedValue(appealS78);
+
+			const mockAppeal = {
+				...appealS78,
+				representations: appealS78.representations.filter((rep) => rep.status !== 'awaiting_review')
+			};
+			databaseConnector.appeal.findUnique.mockResolvedValue(mockAppeal);
 
 			const response = await request
 				.post('/appeals/1/reps/publish')
@@ -550,6 +555,9 @@ describe('/appeals/:id/reps/publish', () => {
 			const [appealStatusItem] = appealS78.appealStatus;
 			const mockAppeal = {
 				...appealS78,
+				representations: appealS78.representations.filter(
+					(rep) => rep.status !== 'awaiting_review'
+				),
 				appealTimetable: { ...appealS78.appealTimetable, finalCommentsDueDate: '2025-02-19' },
 				appealStatus: [{ ...appealStatusItem, status: 'statements' }]
 			};
