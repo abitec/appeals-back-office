@@ -346,6 +346,8 @@ export const getAddDocumentsCheckAndConfirm = async (request, response) => {
 export const postAddDocumentsCheckAndConfirm = async (request, response) => {
 	const { currentAppeal, currentFolder } = request;
 
+	console.log('postAddDocumentsCheckAndConfirm');
+
 	if (!currentAppeal) {
 		return response.status(404).render('app/404');
 	}
@@ -360,7 +362,7 @@ export const postAddDocumentsCheckAndConfirm = async (request, response) => {
 					session: request.session,
 					bannerDefinitionKey: 'documentAdded',
 					appealId: currentAppeal.appealId,
-					text: `${mapFolderNameToDisplayLabel(currentFolder?.path) || 'Document'} added`
+					text: `${mapFolderNameToDisplayLabel(currentFolder?.path) || 'Documents'} added`
 				});
 			}
 		});

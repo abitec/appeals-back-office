@@ -23,6 +23,7 @@ import {
 import { capitalize } from 'lodash-es';
 import { addNotificationBannerToSession } from '#lib/session-utilities.js';
 import logger from '#lib/logger.js';
+import { mapFolderNameToDisplayLabel } from '#lib/mappers/utils/documents-and-folders.js';
 
 /** @type {import('@pins/express').RequestHandler<Response>}  */
 export const getDocumentUpload = async (request, response) => {
@@ -254,8 +255,8 @@ export const getAddDocumentsCheckAndConfirm = async (request, response) => {
 export const postAddDocumentsCheckAndConfirm = async (request, response) => {
 	const {
 		currentAppeal,
-		session,
-		params: { costsCategory, costsDocumentType }
+		currentFolder,
+		session
 	} = request;
 
 	if (!currentAppeal) {
@@ -276,11 +277,9 @@ export const postAddDocumentsCheckAndConfirm = async (request, response) => {
 
 				addNotificationBannerToSession({
 					session,
-					bannerDefinitionKey: 'costsDocumentAdded',
+					bannerDefinitionKey: 'documentAdded',
 					appealId: currentAppeal.appealId,
-					text: `${
-						costsCategory === 'lpa' ? 'LPA' : capitalize(costsCategory)
-					} costs ${costsDocumentType} documents uploaded`
+					text: `${mapFolderNameToDisplayLabel(currentFolder.path)} added`
 				});
 			}
 		});

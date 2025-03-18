@@ -34,7 +34,12 @@ import {
 	dateISOStringToDisplayDate,
 	calculateIncompleteDueDate
 } from '#lib/dates.js';
-import { APPEAL_CASE_STATUS } from 'pins-data-model';
+import {
+	APPEAL_CASE_STATUS,
+	APPEAL_CASE_STAGE,
+	APPEAL_DOCUMENT_TYPE
+} from 'pins-data-model';
+import { FOLDERS } from '@pins/appeals/constants/documents.js';
 
 const { app, installMockApi, teardown } = createTestEnvironment();
 const request = supertest(app);
@@ -691,19 +696,108 @@ describe('appellant-case', () => {
 				);
 			});
 
-			// TODO: A2-1754: tests for document upload success banners:
-			// - ownership certificate and/or land declaration
-			// - application form
-			// - agreement to change description evidence
-			// - design and access statement
-			// - plans, drawings and list of plans
-			// - application decision letter
-			// - appeal statement
-			// - planning obligation
-			// - costs application
-			// - new plans or drawings
-			// - other new supporting documents
-			// - additional documents
+			describe.only('Document added success banners', () => {
+				const appealId = 2;
+				const folderId = 1;
+				const appellantCaseUrl = `/appeals-service/appeal-details/${appealId}/appellant-case`;
+				const testCases = [
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.APPELLANT_STATEMENT}`,
+						label: 'Appeal statement'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.ORIGINAL_APPLICATION_FORM}`,
+						label: 'Application form'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.APPLICATION_DECISION_LETTER}`,
+						label: 'Application decision letter'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.CHANGED_DESCRIPTION}`,
+						label: 'Agreement to change description evidence'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.APPELLANT_CASE_WITHDRAWAL_LETTER}`,
+						label: 'Appellant withdrawal request'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.APPELLANT_CASE_CORRESPONDENCE}`,
+						label: 'Additional documents'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.DESIGN_ACCESS_STATEMENT}`,
+						label: 'Design and access statement'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.PLANS_DRAWINGS}`,
+						label: 'Plans, drawings and list of plans'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.NEW_PLANS_DRAWINGS}`,
+						label: 'New plans or drawings'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.PLANNING_OBLIGATION}`,
+						label: 'Planning obligation'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.OWNERSHIP_CERTIFICATE}`,
+						label: 'Ownership certificate and/or land declaration'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.OTHER_NEW_DOCUMENTS}`,
+						label: 'Other new supporting documents'
+					},
+					{
+						folderPath: `${APPEAL_CASE_STAGE.APPELLANT_CASE}/${APPEAL_DOCUMENT_TYPE.ENVIRONMENTAL_ASSESSMENT}`,
+						label: 'Environmental assessment'
+					}
+				];
+
+				beforeEach(() => {
+					nock.cleanAll();
+					nock('http://test/').get(`/appeals/${appealId}`).reply(200, appealData);
+				});
+
+				for (const testCase of testCases) {
+					it(`should render a "${testCase.label} added" success banner when uploading a document in the "${testCase.folderPath}" folder to the appellant case`, async () => {
+						// TODO: A2-1754: copy approach from appeal-details doc upload unit tests (eg. 'should render a success notification banner when an appellant costs document was uploaded')
+						// needed to ensure fileUploadInfo is in session (as we can't mock the session...)
+						// also need to mock redaction statuses endpoint
+
+						nock('http://test/').get(`/appeals/${appealId}/document-folders/${folderId}`).reply(200, {
+							caseId: appealId,
+							documents: [],
+							folderId: folderId,
+							path: testCase.folderPath
+						});
+
+						const postUploadDocumentsCheckAndConfirmResponse = await request.post(`${appellantCaseUrl}/add-documents/${folderId}/check-your-answers`).send({});
+
+						expect(postUploadDocumentsCheckAndConfirmResponse.statusCode).toBe(302);
+
+						nock('http://test/').get(`/appeals/${appealId}`).reply(200, appealData);
+
+						const response = await request.get(`${appellantCaseUrl}`);
+
+						expect(response.statusCode).toBe(302);
+
+						const notificationBannerElementHTML = parseHtml(response.text, {
+							rootElement: notificationBannerElement
+						}).innerHTML;
+
+						expect(notificationBannerElementHTML).toContain('Success</h3>');
+						expect(notificationBannerElementHTML).toContain(`${testCase.label} added`);
+					});
+				}
+
+				// TODO: A2-1754
+				it('should render a "Document added" success banner when uploading a document in an unhandled folder to the appellant case', async () => {
+					expect(1).toBe(1);
+				});
+			});
+
 		});
 
 		describe('show more', () => {
